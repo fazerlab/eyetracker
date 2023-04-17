@@ -23,3 +23,11 @@ socket.addEventListener('message', function (event) {
 ```
 Aplicações cliente provavelmente necessitarão de procedimentos para calibração de acordo com a distancia do usuário da tela, tamanho da tela , entre outros parâmetros.
 
+
+
+  
+ 
+ 
+ 
+ 
+ 
