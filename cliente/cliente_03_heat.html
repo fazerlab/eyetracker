@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+ 
+<html lang="en">
+ 
+<head>
+ 
+    <meta charset="UTF-8">
+ 
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+ 
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ 
+    <title>WebSocker Client</title>
+     
+     <script src="simpleheat.js"></script>
+ 
+</head>
+ 
+<body >
+ 
+    
+    <p id="coordx">-----</p>
+	<p id="coordy">-----</p>
+    <div id='myDiv'><!-- Plotly chart will be drawn inside this DIV --></div>
+    <canvas id="areagrafico" width="800" height="600"  style="background-color: #e0e0eb; border:1px solid #d3d3d3;"></canvas>
+   
+ 
+</body>
+ 
+<script>
+
+    window.requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame ||
+                               window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
+
+    // secao simpleheat   
+  
+var frame;
+   //window.addEventListener("load", carregaimg);
+
+ var canvas = document.getElementById('areagrafico'),
+   context = canvas.getContext('2d');
+
+   base_image = new Image();
+   //base_image.src = 'tela.png';
+  base_image.src = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAE8AAABFCAIAAACEzSy3AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAASdEVYdFNvZnR3YXJlAEdyZWVuc2hvdF5VCAUAAAnBSURBVHhe1ZvLa11FHMf7RyjduBB3QXzR4rutG4Ni1IIPcBEhCFowi+hC0KogUougoMWFmxYXvlBBgyLYgBsrLlrBB221jY82NIhRrE2yMdH6mfmeO05m5sycRyLJjy+He+fOmfl9zu83vzPn5mbTiRPf9NRPb+3/ZWTbhlBf2unPPglGXM/qRXvy8Genbr0+GHE9qxft9F03B8Otc3WnPfXYrmCs9a+OtBuoMvnqQstyDUbZKOpC++MD9wajNNUt1/26/fLftl4izV52UVJntlxCNzqHp/dWa9qf9+8LhijKERqG0Z2/jI/N7Z44/coL6OxLe8++9up/4u1Le+lANzqLfBWx28d2ZEcwRK1uuU6QvD7z7OM/vXFg+tODJ06e+OOPs7N//7Nw/nxG586dW/rmK/ghN9doaLM5BuO3VzvapsXJcY6PAXns+NFj8wvHlpYF+Ze1hcVFkJLGRz65wSbgRHhoc884t6P9fvja4PxYylvD+dH7x+bmDOfcHPGEIQ+ZNEf+55kZmKvcjiZtqBa05RVrLz+0Jp5AouNHZ2ZmcBpOed/ZxLw49bGZqGtiN6U9+u3hfGCZHrE+Td4uLXPUEu0QzzpTnHlBkKu6HbmRV1PaU688H5zpi9RlboqQ4SR7bUiVunI0aepw3rNiCpgVMQgywG2zunEm15diVV2FlHgKtS6kuMuxgrN4s7OznKVEqFqtZTJCQV488oUSyncmr0a0P37wZnCak1ANpF2lSmDjTY2vIuFyHNh/4P7R0eHh4UuHLr3YGi94OzHxCB8xiHpyii5QbNUyblOoG9HWPQBwXaGtEtiiIpNsEaqLGx3ggW3TwC684EKnqsk27nroQS6KzkoCK8JsVAxw5FtSZVrqU/oh1lZg9kNKYBPe40dJy3jtOdQndz/lYBTPOhM5x30v79O5GkcDysxlte140nABl2nrdhRE1VTgpeXvZk4LVctVrviGr4cOHSJRA04hOataB6b+2I7tOxhcwLFpARvaBvncgPbh+4NzkFmuoztN+bUVWDJzr8xhRZVrIb8rDmt6y9Il4OT21ddcTQv8bhk7s6duOnLkyySw8pnr3iSfC7TpNLYbQ7NVGtxXOcaBFSpHeexj8BZOtywxzn1uzx7a/eDLXFIwET2T+czu0hTnUngLtD988kFwAjKBHR+jCDO9BK2ZdWVgAcC5e+++O0YlOS1jaKxSPq36eSbgkdtup0+8WFy5Yl8ZuBqoQJtYtC6w9pbjAhugYng2OTkZe08Lp1i6hHETSgJrkbP+6ROEFzOrd+rjvrTxFsqtWBUn0calWIHVaqz8tcZbeCxX2rjZJmkx2skU+iTCax8biER+s1Gije60JrBs+gcrNpnGvMWnd956O/abFlas5Upb8iyZwpssV0pm1lf+VlSgDb5DVSU4efgLYutQOVZzDoy5cQiq2G9VXcuVNt2Tq96R8REd6FbN5Bm0eiT0HQ6Uo42/HK/q0wBVtPGixRta4jSW0ej2DIGRFFwOVHWNjHOVzMGMGLTz777enTYuyNCaHcXKapyk5SOcS/rtJ6RvLP6tV23hI7+AB8anXEQVhWqygalQ5bcZOdr4YQBas1VsQAtMXZTc/ZOcpMZyOoNQnPgoj4pxFh24LqtPG39ZUZWoBrS019FieMxHsGG8da/zqNga0oa3H91pm9HikJAqN+uNPk26ybgi7EzI5ORNqBft6RefCXonaTlWEw5M66pun9DHGFA3sGSV6ke794kVvWtiyzHeNuJQ/l7SzRhQ9byaxjNo2eF1p515+tGgd0wr4OTuggq0urTKeRZOLe0bBwztSp99tYltPS0eBAtp1ZOZKsBQux56kGETaby4OPv3P9wv8DDw2Vfr2AZ3INFy1JSaG1N4p6amcLF5EcoYgzAUczEsg1fTDIyLCy17ge60ydgGeykJJ+IHA+DxrO4hrq0xCA/AdYFFPKXob2WBz76ytFFNNmPdMwybewBytBwDP4iA8pn06wnM6e7hti6w058eLD7Q52iT35ibpWsfbn1alAyv8hnjJtkZmBPdQ2KMqkvMMxkFJZ/GKEeb/sPP0OZgq+xoObrpnQmYRn2J0YpZ/ScmHqlDxbi+Zu85N8cS60Wb/LZRCwO25OpVcU4CY24zjGVKlwoSRh2enJzUuXWoJBSe8BBaTGOUo639E8Hga2TFMwCO8xnDVxrlNMWGzIRKSLEBSebTTadw7ZKouqZm0vmFYjWWcrR1v3PjKiIT3sFXUz5tHTDmgoyRBcSNiq1vWBEveMtNS/sHWZKTRh+V+mRQS4FFOdrcb2eGNs/tniC8PqqUB5YpaBnLnIvpU+bi1gAtN54mgUU5WlT7N9voK2VfPnCwhpNGnybdZIxJbKtZlpZZU02+N5cKtNP33Rac4KSqYGaN8tk0WmByUv7J0Z6mi2LKkh1c82pZBb7VqUCb/2mUyZ/RnWZW+/eRABipEf/wsmGck6bTeWFuNkJlxqXlJncdXwXa8o8Zdfsln+uBEV6q3ig+DbEdJOdyydxoZq75hVZ/y5QKtPFWOZRdwKZiEeFUSkvykhcxdp0SkHYEpRJRNagN6rCvUmyzP7eoxJRMPD5mKuTKKi3//LfOabAhwUDypUY+DfpXR1sU2au3japUoC3/asjJTm++WLd/0ZVzTvHbQHWNrr8uJXcBapK/Vlv9HHz1aG3RQmabZdeVvHQeS3ELUmPuI0I6v6CHdVXg32/fzpEb5GrSZn7qxzTSuTu2a25kXLFZbYLMArPVy/feKcnmVEHawss4hJTiz8iMz3SIeb+++RqObuom6k6LmIyry6wc5YTmVgQoXTyFVdi2tARPxUmZjB1Aci4j6DaDNIVm7ICKCrTJv1Y7MRli+s9v2nrwxivxgEb5pFqNTA2zv+3EdUMi8gF/Ja+RPoLkYilTHCd4zIJ0cduiol60kmEb2Qbqh9dfgSDHG7UjPK6w6Tw+xs2Z5QcMycluXuI1LbTzKX3cldIInKgL+t62LRzdjB1UoG3+o3p5IGbcIgJ4pnyjnTiA7ciR3jr57bqLapkoaxiQYTuH1KlAW/wxZ6CAWV46csRoCBJzFaCy0lt9RB86O0iNQCOQnUPqVKBFbf/px7klv31sJ0hi+R10Co0MwlA9Q+pUpu32PxNi5ujC5fPotSCd/E+VC4yzWpxSmbbnfznhrjx26zAgdxKk8tydFYzWU2Xa8oNBMynaiNf+QpV4S/saQTo1iG2TB4OWcuROtKwdpFOZttVWeZ2rTJvfPG4slWmbbKc2isq0a/ff0+fvvGH2sovc5ul/UJl2Lf6BmoJEHWb/YP6Jy/4Z8swW80+MHNcQfmTbv7Vy3v63pkS4AAAAAElFTkSuQmCC"
+   base_image.onload = function(){ 
+                                   context.drawImage(base_image, 0, 0);
+                                   //img_fundo = canvas.toDataURL();
+                                 }
+
+  
+
+
+
+ 
+
+var data_heat = [];
+var heat;
+
+var data_heat = [[500,350,50]];
+
+var heat = simpleheat('areagrafico').data(data_heat).max(100), frame; //max 100 parece ser a faixa maxima, se o terceiro valor de data_heat for 100 fica vermelho, se for 1 nem aparece, 10 um azul fraco 
+heat.radius(10, 10);
+
+//draw();
+
+
+//draw();
+
+function get(id) {
+    return document.getElementById(id);
+}
+
+function draw() {
+    //console.time('draw');
+    heat.draw(0.5);
+    //console.timeEnd('draw');
+    frame = null;
+}
+ 
+    const socket = new WebSocket('ws://localhost:9042'); 
+    socket.addEventListener('open', function (event) { 
+    socket.send('Connection Established'); 
+    });
+ 
+ 
+    socket.addEventListener('message', function (event) { 
+    //console.log(event.data);  
+	const coord = JSON.parse(event.data);
+    document.getElementById("coordx").innerHTML =  coord.x;
+	document.getElementById("coordy").innerHTML =  coord.y;
+    
+    
+    x_escalado =  Math.ceil(mapearfaixa (coord.x , -20.0, 450.0, 0, 800));
+    y_escalado = Math.ceil( mapearfaixa (coord.y , -25.0, 300.0, 0, 600));
+
+
+    //heat.add([coord.x, coord.y, 1]);     
+       
+    heat.add([x_escalado, y_escalado, 10]);   
+   heat.draw(0.2);  
+    context.drawImage(base_image, 0, 0);
+    //frame = frame || window.requestAnimationFrame(draw);    
+    
+    });
+
+
+//https://gist.github.com/gfcarvalho/9502621
+    function imageToBase64(img)
+{
+    var canvas, ctx, dataURL, base64;    
+    canvas = document.getElementById('meucanvas'),
+    ctx = canvas.getContext("2d");
+    canvas.width = img.width;
+    canvas.height = img.height;
+    ctx.drawImage(img, 0, 0);
+    dataURL = canvas.toDataURL("image/png");
+    base64 = dataURL.replace(/^data:image\/png;base64,/, "");
+    return base64;
+}
+
+
+
+
+
+/*get('canvas').onmousemove = function (e) {
+    heat.add([e.layerX, e.layerY, 1]);
+    console.log(e.layerX + " - " + e.layerY);
+    frame = frame || window.requestAnimationFrame(draw);
+};*/
+
+
+function mapearfaixa (number, inMin, inMax, outMin, outMax) {
+    return (number - inMin) * (outMax - outMin) / (inMax - inMin) + outMin;
+}
+
+   
+ 
+ 
+</script>
+ 
+</html>
