@@ -4,6 +4,9 @@
  # O que é
  O Eyetracker é um aplicativo para a plataforma Windows 10 ou superior que utiliza o video da webcam padrão de um computador PC para detectar em tempo real a localização e posicionamento de olhos, iris e cabeça.
  
+ # Objetivo
+ Disponibilizar uma aplicação capaz de detectar de forma consistente as coordenadas que indicam a posição da iris e enviar via Websocket essas coordenadas para que aplicações relacionadas a rastreamento de iris e olhos possam ser desenvolvidas.
+ 
  # Como utilizar
  1. Faça o [download do aplicativo](https://drive.google.com/file/d/13OyVgbxjL2u83hq-EpMZI8DVMiaD3qnL/view?usp=sharing) e descompacte em uma pasta de sua escolha. Execute o arquivos **iris_03.exe**. 
  2. Baixar a pasta cliente dessse repositório e abrir no navegador web o arquivo **cliente_03_heat.html** . O mapa de calor será alterado de acordo com o posicionamento dos olhos.
